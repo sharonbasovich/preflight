@@ -16,8 +16,8 @@ that's the point of the tool — so they never leave your browser.
 
 ## Demo
 
-- Live demo: _see the deployment URL once published (GitHub Pages — workflow
-  included, one setting flip required)_
+- Live demo: https://sharonbasovich.github.io/preflight/ (deployed via GitHub
+  Pages — workflow included, one setting flip required)
 - Try the built-in **Risky sample** — a deliberately toxic diff — then the
   **Clean sample** for contrast.
 
