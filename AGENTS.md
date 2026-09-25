@@ -15,6 +15,8 @@ diff anywhere (diffs contain secrets; that is the product's security model).
 - `src/score.ts` — severity-weighted scoring → A–F grade + verdict.
 - `src/report.ts` — markdown report builder (+ reviewer checklist map).
 - `src/main.ts` — all DOM code (~200 lines).
+- `src/cli.ts` — terminal entry (`npm run cli`); same engine, prints the
+  markdown report, exit 1 on grade C/D/F (pre-push/CI gate).
 - `fixtures/` — `risky.diff` (deliberately toxic demo input) and `clean.diff`,
   imported as `?raw` in `main.ts` and read from disk in tests.
 - `tests/` — vitest; `diffOf()` helper fabricates one-file diffs.
@@ -22,7 +24,7 @@ diff anywhere (diffs contain secrets; that is the product's security model).
 
 ## Commands
 
-`npm run dev` · `npm test` · `npm run typecheck` · `npm run build` · `npm run preview`
+`npm run dev` · `npm test` · `npm run typecheck` · `npm run build` · `npm run preview` · `npm run cli`
 
 ## Contracts worth preserving
 

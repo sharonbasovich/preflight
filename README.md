@@ -36,6 +36,18 @@ npm run preview    # serve the production build
 
 No backend, no API keys, no env vars. Node 20+ only.
 
+### CLI mode
+
+The same engine runs in your terminal — handy as a pre-push gate:
+
+```bash
+npm run cli -- path/to/change.diff          # prints the markdown report
+git diff main...HEAD | npm run cli           # or pipe a live diff
+```
+
+Exit code is 1 when the grade is C/D/F, so it drops straight into a
+`pre-push` hook or CI step.
+
 ## How it works
 
 ```
