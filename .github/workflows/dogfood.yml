@@ -1,12 +1,18 @@
 name: preflight
 
 # PreFlight scans its own pull requests — the markdown report lands as a
-# build artifact on every PR.
+# build artifact on every PR and is also posted (or updated) as a PR comment.
 on:
   pull_request:
 
+# contents: read  — required to check out code and fetch the diff
+# pull-requests: write — required to post/update the risk report comment
+# issues: write       — GitHub's comment API is shared with issues; needed for
+#                       create-or-update-comment via github-script
 permissions:
   contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   scan:
@@ -33,3 +39,46 @@ jobs:
           path: |
             preflight-report.md
             preflight-findings.json
+      # Post (or update) a single PR comment containing the risk report.
+      #
+      # Fork handling: pull requests from forks run with a read-only token —
+      # GitHub deliberately restricts write permissions for forked PRs to
+      # prevent untrusted code from exfiltrating secrets via the token.
+      # We use `continue-on-error: true` rather than a conditional on
+      # github.event.pull_request.head.repo.fork because it also covers any
+      # other transient API failure without failing the overall scan job.
+      # The artifact upload above always succeeds, so reviewers can still read
+      # the report even when the comment cannot be posted.
+      - name: Post report as PR comment
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('preflight-report.md', 'utf8');
+            const marker = '<!-- preflight-report -->';
+            const body = `${marker}\n${report}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

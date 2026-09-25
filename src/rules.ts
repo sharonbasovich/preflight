@@ -45,6 +45,11 @@ const DEBUG_PATTERNS: SecretPattern[] = [
 ];
 
 const TODO_RE = /\b(TODO|FIXME|HACK|XXX|WIP|TEMP|REMOVE ?ME)\b/;
+
+const COMMENTED_CODE_PREFIX = /^\s*(?:\/\/|#|\/\*+(?!\s*\*)|<!--)\s*/;
+const JSDOC_LINE = /^\s*\*|^\s*\/\*\*|^\s*\/\*!|@(?:param|returns?|throws?|type|typedef|property|prop|example|see|since|deprecated|author|license|copyright|version|module)\b/i;
+const LICENSE_HEADER = /\b(license|copyright|spdx|mit|apache|gpl|bsd|mozilla|proprietary|all rights reserved)\b/i;
+const COMMENTED_CODE_RE = /(?:\w+\s*\([^)]*\))|(?:\w[\w.]*\s*[=+\-*/<>!&|]{1,3}\s*\S)|(?:\breturn\s+\S)|\{.*\}|;$|(?:^\s*(?:if|else|for|while|switch|def|const|let|var|async|await|try|catch|throw)\s*[\s({])/;
 const CONFLICT_RE = /^<{7}\s|^={7}\s*$|^>{7}\s/;
 const ENV_REF_RES = [
   /process\.env\.([A-Z][A-Z0-9_]+)/g,
@@ -346,6 +351,46 @@ const rules: Rule[] = [
           suggestion: "Consider splitting into stacked, independently reviewable changes.",
         },
       ];
+    },
+  },
+  {
+    id: "commented-out-code",
+    name: "Commented-out code",
+    severity: "medium",
+    description: "Added comment lines whose content strongly resembles source code (assignments, calls, control keywords, braces/semicolons). Flags when ≥2 such lines appear in a file, or ≥1 in a security-sensitive path.",
+    run(diff) {
+      const out: Finding[] = [];
+      for (const f of diff.files) {
+        const name = fileName(f);
+        const sensitive = SENSITIVE_PATH.test(name);
+        const codeLines: Array<{ no: number | undefined; text: string }> = [];
+        for (const l of addedLines(f)) {
+          const prefixMatch = COMMENTED_CODE_PREFIX.exec(l.text);
+          if (!prefixMatch) continue;
+          const content = l.text.slice(prefixMatch[0].length);
+          if (!content.trim()) continue;
+          if (JSDOC_LINE.test(l.text)) continue;
+          if (LICENSE_HEADER.test(content)) continue;
+          if (!COMMENTED_CODE_RE.test(content)) continue;
+          codeLines.push({ no: l.newLineNo, text: l.text.trim().slice(0, 120) });
+        }
+        const threshold = sensitive ? 1 : 2;
+        if (codeLines.length >= threshold) {
+          const severity: Severity = sensitive ? "high" : "medium";
+          out.push(
+            makeFinding(
+              this,
+              f,
+              codeLines[0].no,
+              `${codeLines.length} commented-out code line(s) found`,
+              codeLines.slice(0, 3).map((c) => c.text).join(" | "),
+              "Remove dead code or restore it; leaving commented-out code creates noise and may hide secrets.",
+              severity,
+            ),
+          );
+        }
+      }
+      return out;
     },
   },
 ];

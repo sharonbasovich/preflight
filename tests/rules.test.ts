@@ -136,6 +136,81 @@ describe("missing-tests", () => {
   });
 });
 
+describe("commented-out-code", () => {
+  it("flags 2+ commented-out code lines in a regular file (JS-style)", () => {
+    const d = diffOf("src/utils.ts", [
+      "// const x = getValue();",
+      "// if (x > 0) { return x; }",
+      "export function foo() {}",
+    ]);
+    expect(ruleIds(d)).toContain("commented-out-code");
+  });
+
+  it("flags commented-out code in Python-style comments", () => {
+    const d = diffOf("src/utils.py", [
+      "# def process(items):",
+      "# for item in items:",
+      "def run(): pass",
+    ]);
+    expect(ruleIds(d)).toContain("commented-out-code");
+  });
+
+  it("flags commented-out HTML", () => {
+    const d = diffOf("src/index.html", [
+      "<!-- <div class=\"foo\">bar</div> -->",
+      "<!-- return foo(x); -->",
+    ]);
+    expect(ruleIds(d)).toContain("commented-out-code");
+  });
+
+  it("flags a single commented-out code line in a security-sensitive path", () => {
+    const d = diffOf("src/auth/login.ts", [
+      "// const token = getToken();",
+      "export function check() {}",
+    ]);
+    const findings = runRules(parseDiff(d)).filter((f) => f.ruleId === "commented-out-code");
+    expect(findings.length).toBeGreaterThanOrEqual(1);
+    expect(findings[0].severity).toBe("high");
+  });
+
+  it("does not flag ordinary prose comments", () => {
+    const d = diffOf("src/utils.ts", [
+      "// This function handles user input",
+      "// See the documentation for details",
+      "export function foo() {}",
+    ]);
+    expect(ruleIds(d)).not.toContain("commented-out-code");
+  });
+
+  it("does not flag JSDoc comments", () => {
+    const d = diffOf("src/utils.ts", [
+      "/**",
+      " * @param x - the input value",
+      " * @returns the result",
+      " */",
+      "export function foo(x: number) { return x; }",
+    ]);
+    expect(ruleIds(d)).not.toContain("commented-out-code");
+  });
+
+  it("does not flag a single commented-out code line in a non-sensitive file", () => {
+    const d = diffOf("src/utils.ts", [
+      "// const x = getValue();",
+      "export function foo() {}",
+    ]);
+    expect(ruleIds(d)).not.toContain("commented-out-code");
+  });
+
+  it("does not flag license headers", () => {
+    const d = diffOf("src/utils.ts", [
+      "// Copyright (c) 2024 Acme Corp. MIT License.",
+      "// Licensed under the Apache License, Version 2.0",
+      "export function foo() {}",
+    ]);
+    expect(ruleIds(d)).not.toContain("commented-out-code");
+  });
+});
+
 describe("large-diff", () => {
   it("flags diffs over 400 changed lines", () => {
     const lines = Array.from({ length: 401 }, (_, i) => `line ${i}`);

@@ -14,6 +14,7 @@ const CHECKLISTS: Record<string, string> = {
   "env-var-undeclared": "Document the variable in .env.example and deploy config.",
   "missing-tests": "Add coverage for the changed behavior.",
   "large-diff": "Split into stacked PRs if practical.",
+  "commented-out-code": "Remove commented-out code or restore it; dead code adds noise and may hide credentials.",
 };
 
 export function buildMarkdownReport(diff: ParsedDiff, findings: Finding[], grade: GradeResult): string {
