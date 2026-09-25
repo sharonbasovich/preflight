@@ -5,6 +5,7 @@ import { scoreFindings } from "./score";
 import { buildMarkdownReport } from "./report";
 import type { Finding, ParsedDiff, Severity } from "./types";
 import riskySample from "../fixtures/risky.diff?raw";
+import borderlineSample from "../fixtures/borderline.diff?raw";
 import cleanSample from "../fixtures/clean.diff?raw";
 
 const input = document.getElementById("diff-input") as HTMLTextAreaElement;
@@ -139,6 +140,11 @@ input.addEventListener("keydown", (e) => {
 
 document.getElementById("btn-sample-risky")!.addEventListener("click", () => {
   input.value = riskySample;
+  updateInputStats();
+  runAnalysis();
+});
+document.getElementById("btn-sample-borderline")!.addEventListener("click", () => {
+  input.value = borderlineSample;
   updateInputStats();
   runAnalysis();
 });

@@ -1,0 +1,24 @@
+diff --git a/src/auth/token.ts b/src/auth/token.ts
+index 7c8d9e0..a1b2c3d 100644
+--- a/src/auth/token.ts
++++ b/src/auth/token.ts
+@@ -20,6 +20,10 @@
+ export function refreshToken(user: User): string {
+   const now = Date.now();
++  // TODO: rotate signing keys quarterly
++  const ttl = user.isAdmin ? 300 : 3600;
++  console.log("refreshing token for", user.id);
+   return jwt.sign({ sub: user.id, iat: now, ttl }, config.secret);
+ }
+diff --git a/src/billing/invoice.ts b/src/billing/invoice.ts
+index 3e4f5a6..b7c8d9e 100644
+--- a/src/billing/invoice.ts
++++ b/src/billing/invoice.ts
+@@ -8,6 +8,9 @@
+ export async function generateInvoice(order: Order) {
+   const items = await order.items();
++  const taxRate = Number(process.env.TAX_RATE ?? 0.13);
++  // FIXME: tax by province not just flat rate
++  const total = items.reduce((s, i) => s + i.price, 0) * (1 + taxRate);
+   return renderPdf({ items, total });
+ }
