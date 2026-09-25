@@ -1,52 +1,66 @@
-# IBM Bob 2.0 access — what Sharon needs to do
+# IBM Bob 2.0 access — corrected per the official hackathon guide
 
-PreFlight was built during the IBM Bob 2.0 hackathon. Devin (the automation
-agent doing the overnight build) cannot log in to Bob — the hackathon Bob
-account is provisioned against Sharon's registration and requires her SSO
-login / API key. This file is the exact checklist for her to complete Bob's
-part of the submission.
+**Correction (verified against the official guide,
+`#the-hackathon-expectation` + `#2-bob-shell-optional`):** the event requires
+**Bob IDE** — "to be eligible for judging, your solution must showcase IBM
+Bob IDE as a core component." Bob Shell is explicitly *optional*; Shell
+transcripts in `bob_sessions/shell-*/` are supplementary evidence only and do
+not by themselves satisfy the event.
 
-## Option A — Bob IDE (required by the hackathon guide)
+The required artifact is the **Bob IDE task session summary screenshot**:
+in the IDE, open **Tasks → task header → summary** and save the PNG into
+`bob_sessions/ide/` (guide section `#upload-bob-task-session-summary`).
 
-1. Download Bob IDE: https://bob.ibm.com/download (Mac/Windows/Linux builds).
-2. Sign in at `bob.ibm.com/login` with the IBMid / hackathon-provisioned
-   account (registration at lablab.ai gates this).
-3. Open this repository in Bob IDE, open the Bob chat, run `/init` so Bob
-   writes AGENTS.md context, then work a few genuine tasks. Suggested prompts
-   (they map to real stretch work):
-   - "Explain the diff parser in src/diff.ts and where a GitHub-PR fetch mode
-     could plug in."
-   - "Add a rule that flags added `FIXME`/`XXX` only on lines inside
-     security-sensitive paths." (compare with the existing rule set)
-   - "Write a CONTRIBUTING.md section describing the rule engine contract."
-   - "Suggest three improvements to src/score.ts grading bands and implement
-     the best one."
-4. Export every relevant task session for judging:
-   Bob chat → **Views and More Actions → History** → open the task → export →
-   save the report into `bob_sessions/` in this repo (one file per task).
-   **Scrub any credentials before committing — IBM deactivates accounts that
-   leak credentials in the repo.**
+## Current status
 
-## Option B — Bob Shell (CLI alternative, scriptable)
+- **Bob IDE 2.2.0** is installed on this Linux workspace (official
+  `IBM-Bob-linux-amd64-1.126.0+bob2.2.0.deb` from `bob.ibm.com/download`).
+  Workspace trusted; weaker-encryption mode selected because the VM has no OS
+  keyring.
+- **Sign-in**: IDE auth is browser SSO (`bob.ibm.com/login`, IBMid or
+  Google/GitHub OAuth) into the hackathon-provisioned team
+  **`ibm-hackathon-lablab`** for sharon@basovich.com. API keys are documented
+  for Bob Shell only — they do not sign in the IDE. Google SSO triggers a
+  phone approval on Sharon's Pixel 6a, so IDE sessions run once she approves.
+- **Bob Shell 2.0.5** is installed and authenticated via `BOB_API_KEY`
+  (scope: Inference). Three real task sessions already landed code — see
+  `bob_sessions/shell-*/`.
+
+## Bob IDE tasks (run after sign-in)
+
+These map to real remaining work in this codebase, chosen so an IDE session
+produces a genuine, reviewable diff:
+
+1. **Document understanding / repo onboarding** — "Read AGENTS.md and
+   README.md, then explain where a `github-pr-url` fetch mode would plug
+   into src/cli.ts without breaking the local-first contract."
+2. **Extend the engine** — "Add a rule flagging added `FIXME`/`XXX` markers
+   only inside security-sensitive paths (reuse SENSITIVE_PATH), with tests."
+3. **UI polish** — "Add a one-line rules legend to the UI listing the loaded
+   rule names from listRules()."
+4. **Docs** — "Write docs/RULES.md documenting each rule's intent and
+   severity."
+
+## Export steps (per task)
+
+Bob IDE → **Tasks** → open the task → **task header → summary** → save the
+PNG into `bob_sessions/ide/<task-slug>.png`.
+**Scrub any credentials before committing — IBM deactivates accounts that
+leak credentials in the repo.**
+
+## Bob Shell (optional, already used)
 
 ```bash
 curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash
-# create an API key (scope: Inference) in the Bob portal, then:
-export BOB_API_KEY="..."
+export BOB_API_KEY="..."   # scope: Inference
 cd preflight
-bob run "Review src/rules.ts and propose a rule for detection of commented-out code blocks" --accept-license
+bob run "task prompt" --trust --accept-license --format stream-json
 ```
 
-Session output can be captured with `bob run ... --format json` and the
-transcript dropped into `bob_sessions/`.
-
-## What is already prepared for Bob
-
-- `bob_sessions/README.md` — where to put the exports.
-- `docs/BOB_USAGE.md` — honest log of which parts were built by Bob vs Devin;
-  update it as Bob sessions land.
+Transcripts captured with `--format stream-json` live in
+`bob_sessions/shell-*/`.
 
 ## Honesty note
 
-Do not fabricate Bob output. The judges score "application of technology" on
-the exported reports; a handful of real sessions beats a padded folder.
+Do not fabricate Bob output or screenshots. A few real IDE sessions with
+exported summaries beat a padded folder — judges cross-check the artifacts.
