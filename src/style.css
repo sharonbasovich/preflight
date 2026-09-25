@@ -159,6 +159,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   border-radius: 999px;
   padding: 4px 10px;
 }
+.sev-chip { color: var(--text); font-size: 12px; }
+.sev-chip:hover { border-color: var(--accent); }
+.chip-off { opacity: 0.45; text-decoration: line-through; }
 
 .findings { overflow-y: auto; }
 .finding {

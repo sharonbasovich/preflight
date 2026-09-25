@@ -1,5 +1,7 @@
 # PreFlight ✈
 
+![cover](docs/cover.png)
+
 **Pre-merge diff risk scanner. Drop a `git diff` in, get a risk report out — 100% in your browser.**
 
 PreFlight catches the stuff humans skim past right before merge: pasted
@@ -14,9 +16,12 @@ that's the point of the tool — so they never leave your browser.
 
 ## Demo
 
-- Live demo: _see the deployment URL once published (GitHub Pages)_
+- Live demo: _see the deployment URL once published (GitHub Pages — workflow
+  included, one setting flip required)_
 - Try the built-in **Risky sample** — a deliberately toxic diff — then the
   **Clean sample** for contrast.
+
+![the risky sample graded F with severity-ordered findings](docs/screenshots/02-risky.png)
 
 ## Run it
 

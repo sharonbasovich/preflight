@@ -24,6 +24,11 @@ let lastReport = "";
 let lastDiff: ParsedDiff | null = null;
 let lastFindings: Finding[] = [];
 let parseErrorEl: HTMLParagraphElement | null = null;
+const hiddenSeverities = new Set<Severity>();
+
+const savedInput = localStorage.getItem("preflight:last-input");
+if (savedInput) input.value = savedInput;
+updateInputStats();
 
 for (const r of listRules()) {
   const li = document.createElement("li");
@@ -53,18 +58,30 @@ function render(diff: ParsedDiff, findings: Finding[]) {
 
   const sevChips = (Object.keys(grade.counts) as Severity[])
     .filter((s) => grade.counts[s] > 0)
-    .map((s) => `<span class="chip">${grade.counts[s]} ${s}</span>`)
+    .map((s) => {
+      const hidden = hiddenSeverities.has(s);
+      return `<button class="chip sev-chip${hidden ? " chip-off" : ""}" data-sev="${s}" title="click to ${hidden ? "show" : "hide"} ${s} findings">${grade.counts[s]} ${s}</button>`;
+    })
     .join("");
   summaryEl.innerHTML =
     `<span class="chip">${diff.files.length} file(s)</span>` +
     `<span class="chip">+${diff.totalAdded} / −${diff.totalRemoved}</span>` +
     sevChips;
-
-  findingsEl.innerHTML = "";
-  if (findings.length === 0) {
-    findingsEl.innerHTML = `<div class="empty"><p>No findings — nothing risky detected in this diff.</p></div>`;
+  for (const chip of summaryEl.querySelectorAll<HTMLButtonElement>(".sev-chip")) {
+    chip.addEventListener("click", () => {
+      const sev = chip.dataset.sev as Severity;
+      if (hiddenSeverities.has(sev)) hiddenSeverities.delete(sev);
+      else hiddenSeverities.add(sev);
+      render(diff, findings);
+    });
   }
-  for (const f of findings) {
+
+  const visible = findings.filter((f) => !hiddenSeverities.has(f.severity));
+  findingsEl.innerHTML = "";
+  if (visible.length === 0) {
+    findingsEl.innerHTML = `<div class="empty"><p>${findings.length === 0 ? "No findings — nothing risky detected in this diff." : "All findings are hidden by the severity filter."}</p></div>`;
+  }
+  for (const f of visible) {
     const div = document.createElement("div");
     div.className = `finding sev-${f.severity}`;
     const loc = f.line ? `${f.file}:${f.line}` : f.file;
@@ -112,7 +129,10 @@ function runAnalysis() {
 }
 
 runBtn.addEventListener("click", runAnalysis);
-input.addEventListener("input", updateInputStats);
+input.addEventListener("input", () => {
+  updateInputStats();
+  localStorage.setItem("preflight:last-input", input.value);
+});
 input.addEventListener("keydown", (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key === "Enter") runAnalysis();
 });
