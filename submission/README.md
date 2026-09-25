@@ -7,15 +7,22 @@
 | Long Description (≥100 w) | `problem_solution.md` | ready |
 | Technology / category tags | TypeScript, Vite, Developer Tools, Code Review, Security, Productivity | ready |
 | Cover image (PNG/JPG 16:9) | `../docs/cover.png` | ready |
-| Video (MP4 ≤5 min) | `demo.mp4` (100 s) + `video_script.md` | ready (narration optional add) |
+| Video (MP4 ≤5 min) | `demo.mp4` (2:45 — title card + UI walkthrough + CLI) | ready |
 | Slides (PDF) | `slides.pdf` (source: `slides.html`, `slides.md`) | ready |
-| Public GitHub repo | `github.com/sharonbasovich/preflight` | **pending push** |
-| Bob session reports | `../bob_sessions/` | **pending Sharon's Bob login** |
-| Application URL | GitHub Pages (see `../docs/DEPLOY.md`) | **pending deploy** |
-| How Bob was used | `bob_use.md` | ready (update after Bob runs) |
+| Public GitHub repo | https://github.com/sharonbasovich/preflight | public (PR #1 open) |
+| Bob session reports | `../bob_sessions/` (Shell tasks committed; IDE task summary PNGs pending Sharon's sign-in) | partial |
+| Application URL | https://sharonbasovich.github.io/preflight/ | live |
+| How Bob was used | `bob_use.md` | ready (marks IDE section pending) |
 
 ## Short description (255 chars)
 
 > Drop a git diff, get an A–F risk report: leaked secrets, conflict markers,
 > debug leftovers, no-rollback migrations, undeclared env vars, missing tests —
 > analyzed 100% locally in your browser. Zero install, zero auth, MIT.
+
+## lablab.ai form
+
+Event: lablab.ai **IBM Bob 2.0** hackathon. If sign-in/Submit is unavailable
+from automation, complete paste-ready text lives in `problem_solution.md`,
+`bob_use.md`, and this file; upload `demo.mp4`, `../docs/cover.png`,
+`slides.pdf`, link the repo + live URL + `../bob_sessions/` evidence.
