@@ -5,12 +5,14 @@ import { scoreFindings } from "./score";
 import { buildMarkdownReport } from "./report";
 
 function usage(): never {
-  console.error("usage: npm run cli -- <diff-file>  (or pipe: git diff | npm run cli)");
+  console.error("usage: npm run cli -- [--json] <diff-file>  (or pipe: git diff | npm run cli -- --json)");
   process.exit(2);
 }
 
 let input: string;
-const arg = process.argv[2];
+const args = process.argv.slice(2);
+const jsonMode = args.includes("--json");
+const arg = args.find((a) => a !== "--json");
 if (arg && arg !== "-") {
   try {
     input = readFileSync(arg, "utf8");
@@ -32,7 +34,29 @@ if (diff.files.length === 0) {
 
 const findings = runRules(diff);
 const grade = scoreFindings(findings);
-console.log(buildMarkdownReport(diff, findings, grade));
+
+if (jsonMode) {
+  console.log(
+    JSON.stringify(
+      {
+        grade: grade.grade,
+        score: grade.score,
+        verdict: grade.verdict,
+        counts: grade.counts,
+        files: diff.files.map((f) => ({
+          path: f.newPath ?? f.oldPath,
+          status: f.status,
+        })),
+        totals: { added: diff.totalAdded, removed: diff.totalRemoved },
+        findings,
+      },
+      null,
+      2,
+    ),
+  );
+} else {
+  console.log(buildMarkdownReport(diff, findings, grade));
+}
 
 const EXIT_BY_GRADE: Record<string, number> = { A: 0, B: 0, C: 1, D: 1, F: 1 };
 process.exit(EXIT_BY_GRADE[grade.grade]);
