@@ -1,0 +1,35 @@
+name: preflight
+
+# PreFlight scans its own pull requests — the markdown report lands as a
+# build artifact on every PR.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Scan the PR diff
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          git diff "origin/${{ github.base_ref }}...HEAD" > /tmp/pr.diff
+          npm run --silent cli -- --json /tmp/pr.diff > preflight-findings.json || true
+          npm run cli -- /tmp/pr.diff > preflight-report.md || true
+          cat preflight-report.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: preflight-report
+          path: |
+            preflight-report.md
+            preflight-findings.json
