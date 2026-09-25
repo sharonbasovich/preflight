@@ -1,0 +1,88 @@
+diff --git a/package.json b/package.json
+index 3a1b2c4..9f8e2d1 100644
+--- a/package.json
++++ b/package.json
+@@ -10,6 +10,8 @@
+   "dependencies": {
+     "express": "^4.19.2",
++    "lodash-helpers": "^0.0.3",
++    "leftpad2": "^1.0.0",
+     "pg": "^8.11.0"
+   }
+ }
+diff --git a/src/auth/session.ts b/src/auth/session.ts
+new file mode 100644
+index 0000000..c4d5e6f
+--- /dev/null
++++ b/src/auth/session.ts
+@@ -0,0 +1,32 @@
++import crypto from "crypto";
++
++// TODO: replace with KMS before launch
++const AWS_KEY = "AKIAIOSFODNN7EXAMPLE";
++const SESSION_SECRET = "x9vB2kL8mN4pQ7rS3tU6wY1zA5cE8gH";
++const STRIPE_KEY = "sk_live_REDACTED00000000";
++
++export function createSession(userId: string, req: Request) {
++  console.log("creating session for", userId, req.headers);
++  const adminUrl = process.env.ADMIN_API_URL;
++  const signingPepper = process.env.JWT_PEPPER;
++  debugger;
++  const token = crypto
++    .createHmac("sha256", SESSION_SECRET + signingPepper)
++    .update(userId)
++    .digest("hex");
++  // FIXME: sessions never expire
++  return { token, adminUrl, awsKey: AWS_KEY, stripe: STRIPE_KEY };
++}
++
++export function requireAdmin(req: Request) {
++  // HACK: trust the header for now
++  return req.headers["x-admin"] === "true";
++}
+diff --git a/src/payments/charge.ts b/src/payments/charge.ts
+index 8f1a2b3..d2e4f5a 100644
+--- a/src/payments/charge.ts
++++ b/src/payments/charge.ts
+@@ -14,7 +14,10 @@
+ export async function chargeUser(userId: string, amount: number) {
+   const db = await getDb();
+-  const user = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
++  console.log("charging", userId, amount);
++  const user = await db.query(`SELECT * FROM users WHERE id = ${userId}`);
++  const token = "ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ012345";
+   return stripe.charge({ amount, source: user.card });
+ }
+diff --git a/migrations/20260925_add_orders.sql b/migrations/20260925_add_orders.sql
+new file mode 100644
+index 0000000..1a2b3c4
+--- /dev/null
++++ b/migrations/20260925_add_orders.sql
+@@ -0,0 +1,10 @@
++CREATE TABLE orders (
++  id SERIAL PRIMARY KEY,
++  user_id INTEGER NOT NULL,
++  total NUMERIC(10,2) NOT NULL
++);
++
++ALTER TABLE users DROP COLUMN billing_address;
++
++ALTER TABLE sessions DROP COLUMN refresh_token;
+diff --git a/src/config.ts b/src/config.ts
+index 1111111..2222222 100644
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -5,6 +5,10 @@
+ export const config = {
+   port: Number(process.env.PORT ?? 3000),
++  redisUrl: process.env.REDIS_URL,
++  featureFlags: process.env.FEATURE_FLAGS,
+ };
++
++print("config loaded")
++
++<<<<<<< HEAD
++export const env = "prod";
++=======
++export const env = "staging";
++>>>>>>> feature-branch

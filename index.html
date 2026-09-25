@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>PreFlight — pre-merge diff risk scanner</title>
+    <meta name="description" content="Drop a git diff, get a risk report. Secrets, conflict markers, missing tests, undeclared env vars — analyzed 100% locally in your browser." />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">✈</span>
+        <div>
+          <h1>PreFlight</h1>
+          <p class="tagline">Pre-merge diff risk scanner</p>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge">100% local — nothing leaves your browser</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel input-panel">
+        <div class="panel-head">
+          <h2>1 · Paste a diff</h2>
+          <div class="row gap">
+            <button id="btn-sample-risky" class="ghost">Risky sample</button>
+            <button id="btn-sample-clean" class="ghost">Clean sample</button>
+            <label class="ghost file-label">
+              Open .diff/.patch/.txt
+              <input id="file-input" type="file" accept=".diff,.patch,.txt,text/plain" hidden />
+            </label>
+          </div>
+        </div>
+        <textarea id="diff-input" spellcheck="false" placeholder="Paste output of `git diff`, `git show`, `git format-patch`, or a GitHub .diff / .patch URL's contents…"></textarea>
+        <div class="row between">
+          <span id="input-stats" class="muted"></span>
+          <button id="btn-run" class="primary">Run checks →</button>
+        </div>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="panel-head">
+          <h2>2 · Risk report</h2>
+          <div class="row gap">
+            <button id="btn-copy" class="ghost" disabled>Copy markdown</button>
+            <button id="btn-download" class="ghost" disabled>Download .md</button>
+          </div>
+        </div>
+
+        <div id="empty-state" class="empty">
+          <p>Paste a diff or load a sample, then run the checks.</p>
+          <ul id="rules-list" class="rules-list"></ul>
+        </div>
+
+        <div id="results" class="results hidden">
+          <div id="verdict" class="verdict"></div>
+          <div id="summary" class="summary"></div>
+          <div id="findings" class="findings"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Built for the IBM Bob 2.0 hackathon · MIT licensed · <a href="https://github.com/sharonbasovich/preflight">source</a></span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

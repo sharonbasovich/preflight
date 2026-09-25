@@ -1,0 +1,27 @@
+diff --git a/src/format.ts b/src/format.ts
+index 4a5b6c7..8d9e0f1 100644
+--- a/src/format.ts
++++ b/src/format.ts
+@@ -2,9 +2,12 @@
+ export function formatDuration(ms: number): string {
+   if (ms < 1000) return `${ms}ms`;
+-  return `${Math.round(ms / 1000)}s`;
++  const seconds = ms / 1000;
++  if (seconds < 60) return `${seconds.toFixed(1)}s`;
++  const minutes = Math.floor(seconds / 60);
++  return `${minutes}m ${Math.round(seconds % 60)}s`;
+ }
+diff --git a/tests/format.test.ts b/tests/format.test.ts
+index 1a2b3c4..5e6f7a8 100644
+--- a/tests/format.test.ts
++++ b/tests/format.test.ts
+@@ -8,4 +8,9 @@
+   it("formats milliseconds", () => {
+     expect(formatDuration(450)).toBe("450ms");
+   });
++
++  it("formats seconds and minutes", () => {
++    expect(formatDuration(1500)).toBe("1.5s");
++    expect(formatDuration(125000)).toBe("2m 5s");
++  });
+ });
