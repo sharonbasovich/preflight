@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PreFlight — slide deck</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; background: #0d1117; color: #e6edf3; }
+  .slide {
+    width: 1280px; height: 720px; padding: 72px 90px;
+    display: flex; flex-direction: column; justify-content: center;
+    page-break-after: always; break-after: page;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  }
+  .kicker { color: #58a6ff; font-size: 20px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
+  h1 { font-size: 72px; line-height: 1.05; }
+  h2 { font-size: 48px; line-height: 1.1; margin-bottom: 28px; }
+  .sub { font-size: 26px; color: #8b949e; margin-top: 18px; max-width: 900px; }
+  ul { font-size: 26px; line-height: 1.65; padding-left: 34px; }
+  li { margin-bottom: 10px; }
+  li::marker { color: #58a6ff; }
+  .bad { color: #f85149; }
+  .good { color: #3fb950; }
+  .mono { font-family: Consolas, monospace; font-size: 22px; background: #1c2430; border: 1px solid #2d333b; border-radius: 10px; padding: 22px 28px; color: #c9d1d9; line-height: 1.7; }
+  .cols { display: flex; gap: 40px; align-items: center; }
+  .cols > div { flex: 1; }
+  .big-grade { font-size: 120px; font-weight: 800; color: #f85149; }
+  .small { font-size: 18px; color: #8b949e; margin-top: 40px; }
+  .chip { display: inline-block; border: 1px solid #3fb950; color: #3fb950; border-radius: 999px; padding: 4px 16px; font-size: 18px; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="kicker">IBM Bob 2.0 Hackathon · Waterloo Workflow Lab</div>
+  <h1>PreFlight ✈</h1>
+  <p class="sub">Pre-merge diff risk scanner. Drop a <code>git diff</code> in, get an A–F risk report out — 100% in your browser.</p>
+  <span class="chip">Local-first · zero install · MIT</span>
+</section>
+
+<section class="slide">
+  <h2>The problem: diffs get skimmed</h2>
+  <ul>
+    <li>The same cheap mistakes keep shipping: <span class="bad">pasted keys</span>, debug leftovers, unresolved conflict markers, migrations with no rollback, undeclared env vars, lockfile drift, missing tests.</li>
+    <li>Trivial to catch. <span class="bad">Expensive when missed</span> — credential leaks, broken deploys, irreversible migrations.</li>
+    <li>Incumbent scanners need CI plumbing, repo permissions, config files. <b>Nothing lives in the last 30 seconds before push.</b></li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>The hero flow</h2>
+  <div class="cols">
+    <div>
+      <ul>
+        <li>Paste or drop <code>git diff</code>, <code>git show</code>, <code>format-patch</code>, GitHub <code>.patch</code>.</li>
+        <li>12 focused rules run locally in &lt;10&nbsp;ms.</li>
+        <li>Get a grade, file:line findings with fixes, a reviewer checklist, and a markdown report for the PR.</li>
+      </ul>
+    </div>
+    <div style="text-align:center">
+      <div class="big-grade">F</div>
+      <div style="color:#8b949e;font-size:22px">the built-in toxic sample: 26 findings,<br>3 critical — caught in one click</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>How it works</h2>
+  <div class="mono">git diff ─▶ parser ─▶ 12 rules ─▶ A–F score ─▶ markdown report<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(multi-file, /dev/null, renames, hunks, binary)</div>
+  <ul style="margin-top:28px">
+    <li>Secrets (AWS, GitHub, Stripe, Slack, JWT, DB URLs) + high-entropy credential assignments</li>
+    <li>Conflict markers · debug leftovers · TODO/FIXME · sensitive paths</li>
+    <li>Manifest↔lockfile drift · migrations without rollback · undeclared env vars · missing tests · diff size</li>
+    <li><b>Local-first is the security model</b> — diffs contain secrets; they never leave the browser.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>Business value</h2>
+  <ul>
+    <li><b>Proven market:</b> GitGuardian, TruffleHog, Danger.js, SAST vendors — billions spent on shift-left security and review tooling.</li>
+    <li><b>Unserved wedge:</b> the pre-CI moment — solo devs and small teams, zero install, zero auth, paste-and-go.</li>
+    <li><b>Revenue model:</b> free web scanner → paid team tier (CI gate, custom rule packs via <code>.preflight.yml</code>, org dashboards). Classic open-core.</li>
+    <li><b>Originality:</b> a shareable A–F verdict on a pasted diff — not another CI bot.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>Built with AI dev partners</h2>
+  <ul>
+    <li><b>Devin</b> built the overnight MVP under automation: parser, rule engine, scoring, UI, 33-test suite — real commits, real history.</li>
+    <li><b>IBM Bob 2.0</b> picked up the repo from there: onboarding via <code>/init</code>, rule review and extension, doc generation. Exported task-session reports live in <code>bob_sessions/</code>.</li>
+    <li>One codebase, two AI partners, an honest ledger: <code>docs/BOB_USAGE.md</code>.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>Where it goes next</h2>
+  <ul>
+    <li>CI mode — the engine is a pure function; wrap it in a GitHub Action.</li>
+    <li>Custom rule packs (<code>.preflight.yml</code>), OpenAPI breaking-change mode.</li>
+    <li>PR-comment integration and team dashboards.</li>
+  </ul>
+  <div class="mono" style="margin-top:30px">github.com/sharonbasovich/preflight &nbsp;·&nbsp; MIT &nbsp;·&nbsp; npm run dev</div>
+  <p class="small">Waterloo Workflow Lab — Sharon Basovich · IBM Bob 2.0 Hackathon, Sep 25–27 2026</p>
+</section>
+
+</body>
+</html>
