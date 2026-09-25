@@ -13,15 +13,16 @@ in the IDE, open **Tasks → task header → summary** and save the PNG into
 
 ## Current status
 
-- **Bob IDE 2.2.0** is installed on this Linux workspace (official
-  `IBM-Bob-linux-amd64-1.126.0+bob2.2.0.deb` from `bob.ibm.com/download`).
-  Workspace trusted; weaker-encryption mode selected because the VM has no OS
-  keyring.
+- **Bob IDE 2.2.0** was installed on a temporary Linux VM from the official
+  `IBM-Bob-linux-amd64-1.126.0+bob2.2.0.deb` at `bob.ibm.com/download`.
+  That VM has no protected OS keyring, so its unauthenticated test profile was
+  discarded. Do not sign in there using weaker encryption. Use an official
+  installer in an environment with a protected credential store instead.
 - **Sign-in**: IDE auth is browser SSO (`bob.ibm.com/login`, IBMid or
   Google/GitHub OAuth) into the hackathon-provisioned team
   **`ibm-hackathon-lablab`** for sharon@basovich.com. API keys are documented
-  for Bob Shell only — they do not sign in the IDE. Google SSO triggers a
-  phone approval on Sharon's Pixel 6a, so IDE sessions run once she approves.
+  for Bob Shell only — they do not sign in the IDE. IBMid/GitHub SSO and any
+  required account approval are still pending; no IDE session has run.
 - **Bob Shell 2.0.5** is installed and authenticated via `BOB_API_KEY`
   (scope: Inference). Three real task sessions already landed code — see
   `bob_sessions/shell-*/`.

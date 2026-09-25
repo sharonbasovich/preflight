@@ -19,13 +19,14 @@ ${body}
 }
 
 const ruleIds = (d: string) => runRules(parseDiff(d)).map((f) => f.ruleId);
+const candidateAwsKey = ["AKIA", "1234567890ABCDEF"].join("");
 
 describe("secret-literal", () => {
   it("flags AWS keys, private keys, tokens, and passworded DB URLs", () => {
     const d = diffOf("src/config.ts", [
-      `const k = "AKIAIOSFODNN7EXAMPLE";`,
-      `const url = "postgres://user:p4ss@db:5432/app";`,
-      `const t = "ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ012345";`,
+      `const k = "${candidateAwsKey}";`,
+      `const url = "${["postgres://", "demo:fakepass", "@host:5432/app"].join("")}";`,
+      `const t = "ghp_${"Z".repeat(30)}";`,
     ]);
     const findings = runRules(parseDiff(d)).filter((f) => f.ruleId === "secret-literal");
     expect(findings.length).toBeGreaterThanOrEqual(3);
@@ -182,6 +183,30 @@ describe("commented-out-code", () => {
     expect(ruleIds(d)).not.toContain("commented-out-code");
   });
 
+  it("ignores only known example keys, not another key on the same line", () => {
+    const example = `const sample = "AKIAIOSFODNN7EXAMPLE";`;
+    expect(ruleIds(diffOf("src/config.ts", [example]))).not.toContain("secret-literal");
+    const mixed = `${example} const candidate = "${candidateAwsKey}";`;
+    expect(ruleIds(diffOf("src/config.ts", [mixed]))).toContain("secret-literal");
+  });
+
+  it("does not treat Markdown headings as commented-out code", () => {
+    const d = diffOf("bob_sessions/shell-02-pr-comment-ci/summary.md", [
+      "# Post (or update) a single PR comment",
+      "## Shell session summary",
+      "# CI integration (GitHub Actions)",
+    ]);
+    expect(ruleIds(d)).not.toContain("commented-out-code");
+  });
+
+  it("does not mistake prose with parentheses for a code call", () => {
+    const d = diffOf("src/auth/login.ts", [
+      "// Post (or update) a review comment after the check finishes.",
+      "// Return (if available) the saved report to the user.",
+    ]);
+    expect(ruleIds(d)).not.toContain("commented-out-code");
+  });
+
   it("does not flag JSDoc comments", () => {
     const d = diffOf("src/utils.ts", [
       "/**",
@@ -225,7 +250,7 @@ describe("scoring + report", () => {
     expect(g.grade).toBe("A");
   });
   it("critical findings push the grade down", () => {
-    const d = parseDiff(diffOf("src/auth/x.ts", [`const k = "AKIAIOSFODNN7EXAMPLE";`]));
+    const d = parseDiff(diffOf("src/auth/x.ts", [`const k = "${candidateAwsKey}";`]));
     const g = scoreFindings(runRules(d));
     expect(["D", "F"]).toContain(g.grade);
   });

@@ -10,15 +10,15 @@ PreFlight was built across two AI development partners:
 - **Devin** (Cognition) executed the overnight MVP under an automation: the
   diff parser, the rule engine, the A–F scoring, the report generator, the
   UI, and the test suite.
-- **IBM Bob 2.0** picked the project up from there. Two official clients were
-  used: **Bob IDE** (the hackathon-required artifact — task session summary
-  PNGs in `bob_sessions/ide/`) and **Bob Shell** (optional CLI — full
-  stream-json transcripts in `bob_sessions/shell-*/`).
+- **IBM Bob Shell 2.0** picked the project up from there. Its full stream-json
+  transcripts are in `bob_sessions/shell-*/`. Bob IDE work is still pending;
+  the hackathon requires genuine IDE use and task-summary evidence.
 
 ## What Bob did — Bob IDE
 
-*[Completed after IDE sign-in — task summary PNGs are committed under
-`bob_sessions/ide/`.]*
+**Pending.** No Bob IDE session or task-summary PNG is claimed yet. Replace
+this section only after completing real IDE tasks and exporting their summaries
+to `bob_sessions/ide/`. Do not use this draft as a final submission statement.
 
 ## What Bob did — Bob Shell (supplementary)
 
@@ -52,5 +52,5 @@ hackathon is scored on.
 ## Honesty note
 
 The `bob_sessions/` exports are the source of truth. Bob Shell sessions are
-logged as supplementary evidence only; the event's required IDE artifacts
-live in `bob_sessions/ide/`. Nothing in this repo is fabricated.
+supplementary evidence only; the event's required IDE artifacts have not yet
+been captured. Nothing in this repo is fabricated.

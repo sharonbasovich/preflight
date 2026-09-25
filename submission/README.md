@@ -12,7 +12,7 @@
 | Public GitHub repo | https://github.com/sharonbasovich/preflight | public (PR #1 open) |
 | Bob session reports | `../bob_sessions/` (Shell tasks committed; IDE task summary PNGs pending Sharon's sign-in) | partial |
 | Application URL | https://sharonbasovich.github.io/preflight/ | live |
-| How Bob was used | `bob_use.md` | ready (marks IDE section pending) |
+| How Bob was used | `bob_use.md` | partial — Shell account ready, IDE work/evidence pending |
 
 ## Short description (255 chars)
 
@@ -22,7 +22,8 @@
 
 ## lablab.ai form
 
-Event: lablab.ai **IBM Bob 2.0** hackathon. If sign-in/Submit is unavailable
-from automation, complete paste-ready text lives in `problem_solution.md`,
-`bob_use.md`, and this file; upload `demo.mp4`, `../docs/cover.png`,
-`slides.pdf`, link the repo + live URL + `../bob_sessions/` evidence.
+Event: lablab.ai **IBM Bob 2.0** hackathon. The project form has an unfinished
+draft. Submission text lives in `problem_solution.md`, `bob_use.md`, and this
+file; verify Bob IDE use and update `bob_use.md` before final submission.
+Upload `demo.mp4`, `../docs/cover.png`, and `slides.pdf`, then link the repo,
+live URL, and genuine `../bob_sessions/` evidence.

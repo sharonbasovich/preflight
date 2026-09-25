@@ -38,7 +38,7 @@ fabrications.
 
 | Task | IDE session summary PNG | Notes |
 | ---- | ----------------------- | ----- |
-| _pending sign-in_ | `bob_sessions/ide/` | IDE 2.2.0 installed; SSO requires Sharon's phone approval — sessions land after approval. |
+| _pending sign-in_ | `bob_sessions/ide/` | No IDE sessions yet. The temporary Linux VM lacked a protected keyring; use a secure IDE environment and export genuine summaries after sign-in. |
 
 ## What is NOT claimed
 

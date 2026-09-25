@@ -1,8 +1,8 @@
 # lablab.ai — paste-ready submission pack (PreFlight)
 
-> Status: **draft-ready, NOT submitted.** lablab.ai sign-in is blocked for
-> automation (options: Email magic link / GitHub OAuth / AMD SSO — all need
-> Sharon's credentials or inbox). Hand this to whoever completes the form.
+> Status: **lablab.ai draft started, NOT submitted.** The form is accessible.
+> Bob IDE work and its evidence remain pending; verify every field before
+> final submission.
 
 ## Exact URLs
 
@@ -26,7 +26,9 @@ analyzed 100% locally in your browser. Zero install, zero auth, MIT.
 
 **Long description / Problem & solution** → paste `problem_solution.md` body.
 
-**How IBM Bob was used** → paste `bob_use.md` body (≤500 words).
+**How IBM Bob was used** → update `bob_use.md` after genuine Bob IDE sessions,
+then paste the verified account (≤500 words). Do not paste its pending section
+as if IDE work has already happened.
 
 **Tags / technologies**
 ```
@@ -54,10 +56,10 @@ https://sharonbasovich.github.io/preflight/
 
 ## Checklist for the submitter
 
-1. Sign in to lablab.ai (GitHub OAuth is fastest with Sharon's GitHub login).
-2. Event page → team/project create → fill fields above.
+1. Open the existing lablab.ai project draft and verify its team and fields.
+2. Complete any fields not yet saved.
 3. Upload cover.png, demo.mp4, slides.pdf.
-4. Paste problem/solution + Bob-use text; link repo + live URL.
+4. Paste problem/solution and the verified Bob-use text; link repo + live URL.
 5. Confirm `bob_sessions/ide/` contains the IDE task-summary PNGs before final
    Submit — the guide requires Bob IDE evidence, not Shell alone.
 6. Submit before Sep 27 3:00 PM CUT. A draft is not a submission.
