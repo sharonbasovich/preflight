@@ -1,8 +1,10 @@
 # lablab.ai — paste-ready submission pack (PreFlight)
 
-> Status: **lablab.ai draft started, NOT submitted.** The form is accessible.
-> Bob IDE evidence is committed (`bob_sessions/ide/`); verify every field
-> before final submission.
+> Status: **lablab.ai draft complete and saved (100%), NOT submitted.**
+> All three steps filled and autosaved; Step 2 uploads accepted
+> (cover image, 2:43 narrated demo.mp4, slides.pdf). Only remaining action:
+> click the purple **"Submit"** button at the bottom of Step 3, which
+> presumably accepts binding event rules — intentionally left for Sharon.
 
 ## Exact URLs
 
