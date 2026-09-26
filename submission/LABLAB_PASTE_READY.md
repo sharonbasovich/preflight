@@ -1,10 +1,9 @@
 # lablab.ai — paste-ready submission pack (PreFlight)
 
-> Status: **lablab.ai draft complete and saved (100%), NOT submitted.**
-> All three steps filled and autosaved; Step 2 uploads accepted
-> (cover image, 2:43 narrated demo.mp4, slides.pdf). Only remaining action:
-> click the purple **"Submit"** button at the bottom of Step 3, which
-> presumably accepts binding event rules — intentionally left for Sharon.
+> Status: **SUBMITTED** on Sep 25, 2026. Confirmation page:
+> https://lablab.ai/ai-hackathons/ibm-bob-2-hackathon/waterloo-workflow-lab/preflight
+> ("Judging is in progress" banner; cover, 2:43 demo video, slides.pdf,
+> GitHub + demo links all live on the public submission page).
 
 ## Exact URLs
 
