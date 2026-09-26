@@ -8,7 +8,15 @@ Per the official hackathon guide, **Bob IDE is required** and the qualifying
 artifact is the **task session summary screenshot** captured in the IDE via
 **Tasks → task header → summary (PNG export)**.
 
-- `ide/` — Bob IDE task session summary PNGs, one folder or file per task.
+- `ide/` — Bob IDE evidence:
+  - `00-signin-account-settings.png` — signed-in account/settings
+    (`sharon@basovich.com`, Enterprise plan, `ibm-hackathon-lablab` budget).
+  - `01-task-score-audit-header-summary.png` + `bob-task-score-audit.json` —
+    task `9ff9d283…` (score-band audit; ran via Shell, visible + exportable
+    in the IDE's shared task history).
+  - `02-task-sarif-header-summary.png` + `bob-task-sarif.json` — task
+    `9632df34…`, run inside the IDE GUI (SARIF 2.1.0 `--sarif` CLI mode,
+    0.84 Bobcoins).
   Scrub credentials before committing — the hackathon guide warns that
   detected IBM Bob/Cloud credentials in the repo trigger account
   deactivation.

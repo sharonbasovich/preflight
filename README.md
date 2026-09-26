@@ -43,6 +43,7 @@ The same engine runs in your terminal — handy as a pre-push gate:
 ```bash
 npm run cli -- path/to/change.diff          # prints the markdown report
 npm run --silent cli -- --json change.diff  # machine-readable findings for CI
+npm run --silent cli -- --sarif change.diff # SARIF 2.1.0 log for code scanning
 git diff main...HEAD | npm run cli           # or pipe a live diff
 ```
 

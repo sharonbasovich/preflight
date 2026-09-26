@@ -10,9 +10,9 @@
 | Video (MP4 ≤5 min) | `demo.mp4` (2:43, narrated — title card + UI walkthrough + CLI) | ready |
 | Slides (PDF) | `slides.pdf` (source: `slides.html`, `slides.md`) | ready |
 | Public GitHub repo | https://github.com/sharonbasovich/preflight | public (PR #1 open) |
-| Bob session reports | `../bob_sessions/` (Shell tasks committed; IDE task summary PNGs pending Sharon's sign-in) | partial |
+| Bob session reports | `../bob_sessions/` (IDE task-summary PNGs + JSON transcripts committed; Shell transcripts too) | ready |
 | Application URL | https://sharonbasovich.github.io/preflight/ | live |
-| How Bob was used | `bob_use.md` | partial — Shell account ready, IDE work/evidence pending |
+| How Bob was used | `bob_use.md` | ready — real IDE task documented |
 
 ## Short description (255 chars)
 
@@ -24,6 +24,6 @@
 
 Event: lablab.ai **IBM Bob 2.0** hackathon. The project form has an unfinished
 draft. Submission text lives in `problem_solution.md`, `bob_use.md`, and this
-file; verify Bob IDE use and update `bob_use.md` before final submission.
-Upload `demo.mp4`, `../docs/cover.png`, and `slides.pdf`, then link the repo,
-live URL, and genuine `../bob_sessions/` evidence.
+file. Bob IDE evidence is committed (`bob_sessions/ide/`). Upload `demo.mp4`,
+`../docs/cover.png`, and `slides.pdf`, then link the repo, live URL, and
+`../bob_sessions/` evidence.

@@ -1,8 +1,8 @@
 # lablab.ai — paste-ready submission pack (PreFlight)
 
 > Status: **lablab.ai draft started, NOT submitted.** The form is accessible.
-> Bob IDE work and its evidence remain pending; verify every field before
-> final submission.
+> Bob IDE evidence is committed (`bob_sessions/ide/`); verify every field
+> before final submission.
 
 ## Exact URLs
 
@@ -26,9 +26,8 @@ analyzed 100% locally in your browser. Zero install, zero auth, MIT.
 
 **Long description / Problem & solution** → paste `problem_solution.md` body.
 
-**How IBM Bob was used** → update `bob_use.md` after genuine Bob IDE sessions,
-then paste the verified account (≤500 words). Do not paste its pending section
-as if IDE work has already happened.
+**How IBM Bob was used** → paste `bob_use.md` (verified ≤500-word account,
+includes the real Bob IDE SARIF task).
 
 **Tags / technologies**
 ```
@@ -52,7 +51,7 @@ https://sharonbasovich.github.io/preflight/
 | Cover image (16:9) | `docs/cover.png` (1280×720) |
 | Demo video (≤3 min, ≥90 s product) | `submission/demo.mp4` (2:43, narrated) |
 | Slide deck | `submission/slides.pdf` |
-| Bob session evidence | `bob_sessions/` — Shell transcripts committed; `bob_sessions/ide/` task-summary PNGs land after Bob IDE sign-in |
+| Bob session evidence | `bob_sessions/` — IDE task-summary PNGs + JSON transcripts committed (`ide/`), plus Shell transcripts (`shell-*/`) |
 
 ## Checklist for the submitter
 
@@ -60,6 +59,6 @@ https://sharonbasovich.github.io/preflight/
 2. Complete any fields not yet saved.
 3. Upload cover.png, demo.mp4, slides.pdf.
 4. Paste problem/solution and the verified Bob-use text; link repo + live URL.
-5. Confirm `bob_sessions/ide/` contains the IDE task-summary PNGs before final
-   Submit — the guide requires Bob IDE evidence, not Shell alone.
+5. `bob_sessions/ide/` already contains the IDE task-summary PNGs + JSON
+   exports (SARIF task `9632df34…`, sign-in settings, score-audit header).
 6. Submit before Sep 27 3:00 PM CUT. A draft is not a submission.

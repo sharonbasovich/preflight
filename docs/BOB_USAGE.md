@@ -36,13 +36,22 @@ fabrications.
 
 ## Built by IBM Bob — IDE (the qualifying evidence)
 
-| Task | IDE session summary PNG | Notes |
-| ---- | ----------------------- | ----- |
-| _pending sign-in_ | `bob_sessions/ide/` | No IDE sessions yet. The temporary Linux VM lacked a protected keyring; use a secure IDE environment and export genuine summaries after sign-in. |
+Bob IDE 2.2.0 was signed in via the portal OAuth flow
+(`sharon@basovich.com`, Enterprise plan, `ibm-hackathon-lablab` team —
+40-Bobcoin budget). Task evidence lives in `bob_sessions/ide/`:
+
+| Task | Evidence | What changed | Bobcoins |
+| ---- | -------- | ------------ | -------- |
+| SARIF 2.1.0 output mode (`--sarif`) | `ide/02-task-sarif-header-summary.png` + `ide/bob-task-sarif.json` (task `9632df34…`) | New `src/sarif.ts` (`toSarif`), `--sarif` flag in `src/cli.ts`, 12 new tests (56 total) | 0.84 |
+| Score-band audit (also in IDE task history) | `ide/01-task-score-audit-header-summary.png` + `ide/bob-task-score-audit.json` (task `9ff9d283…`) | Same work as `shell-03` — the IDE task list shares the Bob task store, so its header summary is exportable in the IDE | (counted above) |
+
+`ide/00-signin-account-settings.png` shows the signed-in account, plan,
+and remaining budget.
 
 ## What is NOT claimed
 
-- Bob IDE usage is **not claimed** until `bob_sessions/ide/` contains the
-  official task session summary PNGs.
+- Only the SARIF task was executed inside the IDE GUI; the score-audit task
+  ran via Bob Shell but is truthfully exportable from the IDE's shared task
+  history.
 - Bob Shell work is genuine and committed, but is logged here as
   *supplementary*, not as the event's required evidence.

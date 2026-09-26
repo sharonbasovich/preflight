@@ -3,16 +3,18 @@ import { parseDiff } from "./diff";
 import { runRules } from "./rules";
 import { scoreFindings } from "./score";
 import { buildMarkdownReport } from "./report";
+import { toSarif } from "./sarif";
 
 function usage(): never {
-  console.error("usage: npm run cli -- [--json] <diff-file>  (or pipe: git diff | npm run cli -- --json)");
+  console.error("usage: npm run cli -- [--json|--sarif] <diff-file>  (or pipe: git diff | npm run cli -- --json)");
   process.exit(2);
 }
 
 let input: string;
 const args = process.argv.slice(2);
 const jsonMode = args.includes("--json");
-const arg = args.find((a) => a !== "--json");
+const sarifMode = args.includes("--sarif");
+const arg = args.find((a) => a !== "--json" && a !== "--sarif");
 if (arg && arg !== "-") {
   try {
     input = readFileSync(arg, "utf8");
@@ -35,7 +37,9 @@ if (diff.files.length === 0) {
 const findings = runRules(diff);
 const grade = scoreFindings(findings);
 
-if (jsonMode) {
+if (sarifMode) {
+  console.log(JSON.stringify(toSarif(findings), null, 2));
+} else if (jsonMode) {
   console.log(
     JSON.stringify(
       {

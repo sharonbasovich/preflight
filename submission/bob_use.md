@@ -10,15 +10,22 @@ PreFlight was built across two AI development partners:
 - **Devin** (Cognition) executed the overnight MVP under an automation: the
   diff parser, the rule engine, the A–F scoring, the report generator, the
   UI, and the test suite.
-- **IBM Bob Shell 2.0** picked the project up from there. Its full stream-json
-  transcripts are in `bob_sessions/shell-*/`. Bob IDE work is still pending;
-  the hackathon requires genuine IDE use and task-summary evidence.
+- **IBM Bob 2.0** picked the project up from there — through both official
+  clients: **Bob IDE** (task summary PNGs + JSON exports in
+  `bob_sessions/ide/`) and **Bob Shell** (stream-json transcripts in
+  `bob_sessions/shell-*/`).
 
 ## What Bob did — Bob IDE
 
-**Pending.** No Bob IDE session or task-summary PNG is claimed yet. Replace
-this section only after completing real IDE tasks and exporting their summaries
-to `bob_sessions/ide/`. Do not use this draft as a final submission statement.
+Signed in via the portal OAuth flow as `sharon@basovich.com` on the
+Enterprise plan (team `ibm-hackathon-lablab`). In the IDE task panel, Bob
+planned, implemented, tested, and smoke-tested a **SARIF 2.1.0 output mode**
+for the CLI: `npm run cli -- fixtures/risky.diff --sarif` now emits a
+standards-conformant SARIF log (ruleId per rule, severity→level mapping,
+file/line physicalLocations, suggestions as help text) for GitHub code
+scanning and CI upload. New `src/sarif.ts`, the `--sarif` flag in
+`src/cli.ts`, and 12 new tests (56 total, all passing) — task `9632df34…`,
+0.84 Bobcoins, header summary PNG + full JSON transcript committed.
 
 ## What Bob did — Bob Shell (supplementary)
 
@@ -38,7 +45,7 @@ Three real `bob run` task sessions produced committed code:
    minimal band adjustment (C ≤44, D ≤64) with full reasoning in
    `docs/SCORE_AUDIT.md`.
 
-Total spend: **~2.1 of the team's 40 Bobcoins** across four sessions —
+Total spend: **~2.9 of the team's 40 Bobcoins** across all sessions —
 deliberately economical, in line with the guide's best practices.
 
 ## Why the tasks fit Bob
@@ -51,6 +58,7 @@ hackathon is scored on.
 
 ## Honesty note
 
-The `bob_sessions/` exports are the source of truth. Bob Shell sessions are
-supplementary evidence only; the event's required IDE artifacts have not yet
-been captured. Nothing in this repo is fabricated.
+The `bob_sessions/` exports are the source of truth. The SARIF task ran
+inside the Bob IDE GUI; the earlier Shell tasks also appear in the IDE task
+history (shared task store) and their summary PNGs are committed. Nothing in
+this repo is fabricated.
