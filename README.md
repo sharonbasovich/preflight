@@ -43,11 +43,27 @@ The same engine runs in your terminal — handy as a pre-push gate:
 ```bash
 npm run cli -- path/to/change.diff          # prints the markdown report
 npm run --silent cli -- --json change.diff  # machine-readable findings for CI
+npm run --silent cli -- --sarif change.diff # SARIF 2.1.0 log for code scanning
 git diff main...HEAD | npm run cli           # or pipe a live diff
 ```
 
 Exit code is 1 when the grade is C/D/F, so it drops straight into a
 `pre-push` hook or CI step.
+
+## CI integration
+
+PreFlight dog-foods itself via [`.github/workflows/dogfood.yml`](.github/workflows/dogfood.yml).
+On every pull request the workflow:
+
+1. Generates a diff against the base branch and runs the CLI scanner.
+2. Uploads `preflight-report.md` and `preflight-findings.json` as a build artifact.
+3. Posts (or updates) a single PR comment containing the full markdown report,
+   tagged with a hidden `<!-- preflight-report -->` marker so reruns replace
+   the existing comment instead of adding new ones.
+
+Forked PRs receive a read-only token from GitHub — the comment step uses
+`continue-on-error: true` so a permission denial never fails the scan job;
+the artifact is always available as a fallback.
 
 ## How it works
 

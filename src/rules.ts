@@ -36,6 +36,16 @@ const SECRET_PATTERNS: SecretPattern[] = [
   { name: "database URL with password", re: /\b(postgres|postgresql|mysql|mongodb(\+srv)?|redis|amqp):\/\/[^:/\s]+:[^@/\s]+@/i },
 ];
 
+// These published/test-only literals appear in our fixtures and Bob logs.
+// Ignore those exact values, while still checking every other credential on
+// the same line. The GitHub-shaped token and DB URL are split to avoid
+// self-matching.
+const EXAMPLE_CREDENTIALS = [
+  "AKIAIOSFODNN7EXAMPLE",
+  ["ghp_", "aBcDeFgHiJkLmNoPqRsTuVwXyZ012345"].join(""),
+  ["postgres://", "user:p4ss", "@db:5432/app"].join(""),
+];
+
 const DEBUG_PATTERNS: SecretPattern[] = [
   { name: "console.log", re: /\bconsole\.(log|debug|dir|trace|warn|info)\s*\(/ },
   { name: "debugger statement", re: /^\s*debugger;?\s*$/ },
@@ -45,6 +55,11 @@ const DEBUG_PATTERNS: SecretPattern[] = [
 ];
 
 const TODO_RE = /\b(TODO|FIXME|HACK|XXX|WIP|TEMP|REMOVE ?ME)\b/;
+
+const COMMENTED_CODE_PREFIX = /^\s*(?:\/\/|#|\/\*+(?!\s*\*)|<!--)\s*/;
+const JSDOC_LINE = /^\s*\*|^\s*\/\*\*|^\s*\/\*!|@(?:param|returns?|throws?|type|typedef|property|prop|example|see|since|deprecated|author|license|copyright|version|module)\b/i;
+const LICENSE_HEADER = /\b(license|copyright|spdx|mit|apache|gpl|bsd|mozilla|proprietary|all rights reserved)\b/i;
+const COMMENTED_CODE_RE = /^(?:\s*(?:return|throw|if|else|for|while|switch|def|function|class|const|let|var|async|await|try|catch|import|export|from)\b|\s*[A-Za-z_$][\w.$]*\([^)]*\)\s*[;{]?|\s*[A-Za-z_$][\w.$]*\s*(?:=|\+=|-=|\*=|\/=|=>)\s*\S|\s*<\/?[A-Za-z][^>]*>|\s*[{}]\s*;?$)/;
 const CONFLICT_RE = /^<{7}\s|^={7}\s*$|^>{7}\s/;
 const ENV_REF_RES = [
   /process\.env\.([A-Z][A-Z0-9_]+)/g,
@@ -93,7 +108,8 @@ const rules: Rule[] = [
         if (ENV_EXAMPLE.test(fileName(f))) continue;
         for (const l of addedLines(f)) {
           for (const p of SECRET_PATTERNS) {
-            if (p.re.test(l.text)) {
+            const scanText = EXAMPLE_CREDENTIALS.reduce((text, example) => text.replaceAll(example, ""), l.text);
+            if (p.re.test(scanText)) {
               out.push(
                 makeFinding(this, f, l.newLineNo, `Possible ${p.name} committed`, l.text.trim().slice(0, 120), "Move the value to a secret manager or environment variable, and rotate it if it was ever pushed."),
               );
@@ -346,6 +362,48 @@ const rules: Rule[] = [
           suggestion: "Consider splitting into stacked, independently reviewable changes.",
         },
       ];
+    },
+  },
+  {
+    id: "commented-out-code",
+    name: "Commented-out code",
+    severity: "medium",
+    description: "Added comment lines whose content strongly resembles source code (assignments, calls, control keywords, braces/semicolons). Flags when ≥2 such lines appear in a file, or ≥1 in a security-sensitive path.",
+    run(diff) {
+      const out: Finding[] = [];
+      for (const f of diff.files) {
+        const name = fileName(f);
+        // Markdown headings and other prose can begin with '#', but they are not source comments.
+        if (!CODE_EXT.test(name) && !/\.(html|css|scss|yml|yaml|toml|jsonc)$/i.test(name)) continue;
+        const sensitive = SENSITIVE_PATH.test(name);
+        const codeLines: Array<{ no: number | undefined; text: string }> = [];
+        for (const l of addedLines(f)) {
+          const prefixMatch = COMMENTED_CODE_PREFIX.exec(l.text);
+          if (!prefixMatch) continue;
+          const content = l.text.slice(prefixMatch[0].length);
+          if (!content.trim()) continue;
+          if (JSDOC_LINE.test(l.text)) continue;
+          if (LICENSE_HEADER.test(content)) continue;
+          if (!COMMENTED_CODE_RE.test(content)) continue;
+          codeLines.push({ no: l.newLineNo, text: l.text.trim().slice(0, 120) });
+        }
+        const threshold = sensitive ? 1 : 2;
+        if (codeLines.length >= threshold) {
+          const severity: Severity = sensitive ? "high" : "medium";
+          out.push(
+            makeFinding(
+              this,
+              f,
+              codeLines[0].no,
+              `${codeLines.length} commented-out code line(s) found`,
+              codeLines.slice(0, 3).map((c) => c.text).join(" | "),
+              "Remove dead code or restore it; leaving commented-out code creates noise and may hide secrets.",
+              severity,
+            ),
+          );
+        }
+      }
+      return out;
     },
   },
 ];

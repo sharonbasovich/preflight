@@ -28,7 +28,7 @@ IBM Bob 2.0 Hackathon · Waterloo Workflow Lab · Sharon Basovich
 # The hero flow
 
 - Paste or drop `git diff`, `git show`, `format-patch`, GitHub `.patch`.
-- 12 focused rules run locally in <10 ms.
+- 13 focused rules run locally in <10 ms.
 - Grade, file:line findings with fixes, reviewer checklist, markdown report
   for the PR.
 - The built-in toxic sample scores **F — 26 findings, 3 critical — in one click.**
@@ -38,7 +38,7 @@ IBM Bob 2.0 Hackathon · Waterloo Workflow Lab · Sharon Basovich
 # How it works
 
 ```
-git diff ─▶ parser ─▶ 12 rules ─▶ A–F score ─▶ markdown report
+git diff ─▶ parser ─▶ 13 rules ─▶ A–F score ─▶ markdown report
            (multi-file, /dev/null, renames, hunks, binary)
 ```
 
@@ -67,18 +67,20 @@ git diff ─▶ parser ─▶ 12 rules ─▶ A–F score ─▶ markdown report
 # Built with AI dev partners
 
 - **Devin** built the overnight MVP under automation: parser, rule engine,
-  scoring, UI, 33-test suite — real commits, real history.
-- **IBM Bob 2.0** picked up the repo from there: `/init` onboarding, rule
-  review and extension, doc generation. Exported task-session reports live in
-  `bob_sessions/`.
-- One codebase, two AI partners, an honest ledger: `docs/BOB_USAGE.md`.
+  scoring, UI, 44-test suite — real commits, real history.
+- **IBM Bob Shell 2.0** picked up the repo from there: a new commented-out-code
+  rule, a dogfooding PR-comment GitHub Action, a scoring audit + docs.
+  Full stream-json transcripts live in `bob_sessions/shell-*`.
+- One codebase, two AI partners, an honest ledger: `docs/BOB_USAGE.md`. Bob
+  IDE evidence lands in `bob_sessions/ide/` once sessions complete.
 
 ---
 
 # Where it goes next
 
-- CI mode — the engine is a pure function; wrap it in a GitHub Action.
 - Custom rule packs (`.preflight.yml`), OpenAPI breaking-change mode.
-- PR-comment integration and team dashboards.
+- Team dashboards + severity-threshold presets.
+- Shipped during the event: PR-comment GitHub Action (`dogfood.yml`) — the
+  scanner grades its own PRs.
 
 `github.com/sharonbasovich/preflight` · MIT · `npm run dev`

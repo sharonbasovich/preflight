@@ -1,0 +1,174 @@
+commit 50a0cf16bb875c17317ff8c650d2f0dd5e1ac240
+Author: Sharon Basovich <sharon@basovich.com>
+Date:   Fri Sep 25 21:56:34 2026 +0000
+
+    Bob-authored: commented-out-code rule, PR-comment CI, score recalibration
+    
+    Three IBM Bob Shell task sessions (transcripts in bob_sessions/):
+    1. commented-out-code rule in src/rules.ts + CHECKLISTS entry + 8 tests
+    2. dogfood.yml posts/updates a single PR comment via github-script
+    3. score.ts band audit: C<=44, D<=64, F>=65 (docs/SCORE_AUDIT.md)
+    
+    Co-Authored-By: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>
+
+diff --git a/src/report.ts b/src/report.ts
+index 68d3cb9..f3c909d 100644
+--- a/src/report.ts
++++ b/src/report.ts
+@@ -14,6 +14,7 @@ const CHECKLISTS: Record<string, string> = {
+   "env-var-undeclared": "Document the variable in .env.example and deploy config.",
+   "missing-tests": "Add coverage for the changed behavior.",
+   "large-diff": "Split into stacked PRs if practical.",
++  "commented-out-code": "Remove commented-out code or restore it; dead code adds noise and may hide credentials.",
+ };
+ 
+ export function buildMarkdownReport(diff: ParsedDiff, findings: Finding[], grade: GradeResult): string {
+diff --git a/src/rules.ts b/src/rules.ts
+index c67f848..339a487 100644
+--- a/src/rules.ts
++++ b/src/rules.ts
+@@ -45,6 +45,11 @@ const DEBUG_PATTERNS: SecretPattern[] = [
+ ];
+ 
+ const TODO_RE = /\b(TODO|FIXME|HACK|XXX|WIP|TEMP|REMOVE ?ME)\b/;
++
++const COMMENTED_CODE_PREFIX = /^\s*(?:\/\/|#|\/\*+(?!\s*\*)|<!--)\s*/;
++const JSDOC_LINE = /^\s*\*|^\s*\/\*\*|^\s*\/\*!|@(?:param|returns?|throws?|type|typedef|property|prop|example|see|since|deprecated|author|license|copyright|version|module)\b/i;
++const LICENSE_HEADER = /\b(license|copyright|spdx|mit|apache|gpl|bsd|mozilla|proprietary|all rights reserved)\b/i;
++const COMMENTED_CODE_RE = /(?:\w+\s*\([^)]*\))|(?:\w[\w.]*\s*[=+\-*/<>!&|]{1,3}\s*\S)|(?:\breturn\s+\S)|\{.*\}|;$|(?:^\s*(?:if|else|for|while|switch|def|const|let|var|async|await|try|catch|throw)\s*[\s({])/;
+ const CONFLICT_RE = /^<{7}\s|^={7}\s*$|^>{7}\s/;
+ const ENV_REF_RES = [
+   /process\.env\.([A-Z][A-Z0-9_]+)/g,
+@@ -348,6 +353,46 @@ const rules: Rule[] = [
+       ];
+     },
+   },
++  {
++    id: "commented-out-code",
++    name: "Commented-out code",
++    severity: "medium",
++    description: "Added comment lines whose content strongly resembles source code (assignments, calls, control keywords, braces/semicolons). Flags when ≥2 such lines appear in a file, or ≥1 in a security-sensitive path.",
++    run(diff) {
++      const out: Finding[] = [];
++      for (const f of diff.files) {
++        const name = fileName(f);
++        const sensitive = SENSITIVE_PATH.test(name);
++        const codeLines: Array<{ no: number | undefined; text: string }> = [];
++        for (const l of addedLines(f)) {
++          const prefixMatch = COMMENTED_CODE_PREFIX.exec(l.text);
++          if (!prefixMatch) continue;
++          const content = l.text.slice(prefixMatch[0].length);
++          if (!content.trim()) continue;
++          if (JSDOC_LINE.test(l.text)) continue;
++          if (LICENSE_HEADER.test(content)) continue;
++          if (!COMMENTED_CODE_RE.test(content)) continue;
++          codeLines.push({ no: l.newLineNo, text: l.text.trim().slice(0, 120) });
++        }
++        const threshold = sensitive ? 1 : 2;
++        if (codeLines.length >= threshold) {
++          const severity: Severity = sensitive ? "high" : "medium";
++          out.push(
++            makeFinding(
++              this,
++              f,
++              codeLines[0].no,
++              `${codeLines.length} commented-out code line(s) found`,
++              codeLines.slice(0, 3).map((c) => c.text).join(" | "),
++              "Remove dead code or restore it; leaving commented-out code creates noise and may hide secrets.",
++              severity,
++            ),
++          );
++        }
++      }
++      return out;
++    },
++  },
+ ];
+ 
+ export interface RuleInfo {
+diff --git a/tests/rules.test.ts b/tests/rules.test.ts
+index 30f7ad6..60e547c 100644
+--- a/tests/rules.test.ts
++++ b/tests/rules.test.ts
+@@ -136,6 +136,81 @@ describe("missing-tests", () => {
+   });
+ });
+ 
++describe("commented-out-code", () => {
++  it("flags 2+ commented-out code lines in a regular file (JS-style)", () => {
++    const d = diffOf("src/utils.ts", [
++      "// const x = getValue();",
++      "// if (x > 0) { return x; }",
++      "export function foo() {}",
++    ]);
++    expect(ruleIds(d)).toContain("commented-out-code");
++  });
++
++  it("flags commented-out code in Python-style comments", () => {
++    const d = diffOf("src/utils.py", [
++      "# def process(items):",
++      "# for item in items:",
++      "def run(): pass",
++    ]);
++    expect(ruleIds(d)).toContain("commented-out-code");
++  });
++
++  it("flags commented-out HTML", () => {
++    const d = diffOf("src/index.html", [
++      "<!-- <div class=\"foo\">bar</div> -->",
++      "<!-- return foo(x); -->",
++    ]);
++    expect(ruleIds(d)).toContain("commented-out-code");
++  });
++
++  it("flags a single commented-out code line in a security-sensitive path", () => {
++    const d = diffOf("src/auth/login.ts", [
++      "// const token = getToken();",
++      "export function check() {}",
++    ]);
++    const findings = runRules(parseDiff(d)).filter((f) => f.ruleId === "commented-out-code");
++    expect(findings.length).toBeGreaterThanOrEqual(1);
++    expect(findings[0].severity).toBe("high");
++  });
++
++  it("does not flag ordinary prose comments", () => {
++    const d = diffOf("src/utils.ts", [
++      "// This function handles user input",
++      "// See the documentation for details",
++      "export function foo() {}",
++    ]);
++    expect(ruleIds(d)).not.toContain("commented-out-code");
++  });
++
++  it("does not flag JSDoc comments", () => {
++    const d = diffOf("src/utils.ts", [
++      "/**",
++      " * @param x - the input value",
++      " * @returns the result",
++      " */",
++      "export function foo(x: number) { return x; }",
++    ]);
++    expect(ruleIds(d)).not.toContain("commented-out-code");
++  });
++
++  it("does not flag a single commented-out code line in a non-sensitive file", () => {
++    const d = diffOf("src/utils.ts", [
++      "// const x = getValue();",
++      "export function foo() {}",
++    ]);
++    expect(ruleIds(d)).not.toContain("commented-out-code");
++  });
++
++  it("does not flag license headers", () => {
++    const d = diffOf("src/utils.ts", [
++      "// Copyright (c) 2024 Acme Corp. MIT License.",
++      "// Licensed under the Apache License, Version 2.0",
++      "export function foo() {}",
++    ]);
++    expect(ruleIds(d)).not.toContain("commented-out-code");
++  });
++});
++
+ describe("large-diff", () => {
+   it("flags diffs over 400 changed lines", () => {
+     const lines = Array.from({ length: 401 }, (_, i) => `line ${i}`);

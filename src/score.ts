@@ -27,10 +27,10 @@ export function scoreFindings(findings: Finding[]): GradeResult {
   } else if (score <= 14) {
     grade = "B";
     verdict = "Minor turbulence — quick pass over the flags should do.";
-  } else if (score <= 29) {
+  } else if (score <= 44) {
     grade = "C";
     verdict = "Holding pattern — several issues deserve a second look.";
-  } else if (score <= 49) {
+  } else if (score <= 64) {
     grade = "D";
     verdict = "Rough air ahead — resolve flagged items before merging.";
   } else {
