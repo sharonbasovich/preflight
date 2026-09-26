@@ -7,7 +7,7 @@
 | Long Description (≥100 w) | `problem_solution.md` | ready |
 | Technology / category tags | TypeScript, Vite, Developer Tools, Code Review, Security, Productivity | ready |
 | Cover image (PNG/JPG 16:9) | `../docs/cover.png` | ready |
-| Video (MP4 ≤5 min) | `demo.mp4` (2:45 — title card + UI walkthrough + CLI) | ready |
+| Video (MP4 ≤5 min) | `demo.mp4` (2:43, narrated — title card + UI walkthrough + CLI) | ready |
 | Slides (PDF) | `slides.pdf` (source: `slides.html`, `slides.md`) | ready |
 | Public GitHub repo | https://github.com/sharonbasovich/preflight | public (PR #1 open) |
 | Bob session reports | `../bob_sessions/` (Shell tasks committed; IDE task summary PNGs pending Sharon's sign-in) | partial |

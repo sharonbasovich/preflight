@@ -54,7 +54,7 @@
     <div>
       <ul>
         <li>Paste or drop <code>git diff</code>, <code>git show</code>, <code>format-patch</code>, GitHub <code>.patch</code>.</li>
-        <li>12 focused rules run locally in &lt;10&nbsp;ms.</li>
+        <li>13 focused rules run locally in &lt;10&nbsp;ms.</li>
         <li>Get a grade, file:line findings with fixes, a reviewer checklist, and a markdown report for the PR.</li>
       </ul>
     </div>
@@ -67,7 +67,7 @@
 
 <section class="slide">
   <h2>How it works</h2>
-  <div class="mono">git diff ─▶ parser ─▶ 12 rules ─▶ A–F score ─▶ markdown report<br>
+  <div class="mono">git diff ─▶ parser ─▶ 13 rules ─▶ A–F score ─▶ markdown report<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(multi-file, /dev/null, renames, hunks, binary)</div>
   <ul style="margin-top:28px">
     <li>Secrets (AWS, GitHub, Stripe, Slack, JWT, DB URLs) + high-entropy credential assignments</li>
@@ -90,18 +90,18 @@
 <section class="slide">
   <h2>Built with AI dev partners</h2>
   <ul>
-    <li><b>Devin</b> built the overnight MVP under automation: parser, rule engine, scoring, UI, 33-test suite — real commits, real history.</li>
-    <li><b>IBM Bob 2.0</b> picked up the repo from there: onboarding via <code>/init</code>, rule review and extension, doc generation. Exported task-session reports live in <code>bob_sessions/</code>.</li>
-    <li>One codebase, two AI partners, an honest ledger: <code>docs/BOB_USAGE.md</code>.</li>
+    <li><b>Devin</b> built the overnight MVP under automation: parser, rule engine, scoring, UI, 44-test suite — real commits, real history.</li>
+    <li><b>IBM Bob Shell 2.0</b> picked up the repo from there: a new commented-out-code rule, a dogfooding PR-comment GitHub Action, a scoring audit + docs. Full stream-json transcripts in <code>bob_sessions/shell-*</code>.</li>
+    <li>One codebase, two AI partners, an honest ledger: <code>docs/BOB_USAGE.md</code>. Bob IDE evidence lands in <code>bob_sessions/ide/</code> once sessions complete.</li>
   </ul>
 </section>
 
 <section class="slide">
   <h2>Where it goes next</h2>
   <ul>
-    <li>CI mode — the engine is a pure function; wrap it in a GitHub Action.</li>
     <li>Custom rule packs (<code>.preflight.yml</code>), OpenAPI breaking-change mode.</li>
-    <li>PR-comment integration and team dashboards.</li>
+    <li>Team dashboards + severity-threshold presets.</li>
+    <li><b>Shipped during the event:</b> a PR-comment GitHub Action (<code>dogfood.yml</code>) — the scanner grades its own PRs.</li>
   </ul>
   <div class="mono" style="margin-top:30px">github.com/sharonbasovich/preflight &nbsp;·&nbsp; MIT &nbsp;·&nbsp; npm run dev</div>
   <p class="small">Waterloo Workflow Lab — Sharon Basovich · IBM Bob 2.0 Hackathon, Sep 25–27 2026</p>

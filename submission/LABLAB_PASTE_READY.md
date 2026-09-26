@@ -50,7 +50,7 @@ https://sharonbasovich.github.io/preflight/
 | Field | File |
 | --- | --- |
 | Cover image (16:9) | `docs/cover.png` (1280×720) |
-| Demo video (≤3 min, ≥90 s product) | `submission/demo.mp4` (2:45) |
+| Demo video (≤3 min, ≥90 s product) | `submission/demo.mp4` (2:43, narrated) |
 | Slide deck | `submission/slides.pdf` |
 | Bob session evidence | `bob_sessions/` — Shell transcripts committed; `bob_sessions/ide/` task-summary PNGs land after Bob IDE sign-in |
 
